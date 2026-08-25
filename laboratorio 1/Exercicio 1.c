@@ -25,32 +25,30 @@ int ocorrencia(char string1[51], char string2[51]){
         temp1[i] = tolower(string1[i]);
 
     };
+    temp1[i] = '\0';
 
-    //printf("%s", temp1); verificar se a string1 esta sendo passado para o diminutivo
+    printf("%s", temp1); //verificar se a string1 esta sendo passado para o diminutivo
 
 
     for(i = 0; string2[i] != '\0'; i++){
         temp2[i] = tolower(string2[i]);
 
     };
+    temp2[i] = '\0';
+    if (temp2[0] == '\0') return 1;
 
-    //printf("%s", temp2); verificar se a string2 esta sendo passado para o diminutivo
-    int contador;
-    for(i=0; temp1 != '\0'; i++){
-        contador =0;
+    printf("%s", temp2); //verificar se a string2 esta sendo passado para o diminutivo
+    for(i = 0; temp1[i] != '\0'; i++){
         for (j = 0; temp2[j] != '\0'; j++){
-            if(temp1[j+i]==temp2[j]){
-                contador++;    
-                break;}
+            if(temp1[i+j] != temp2[j]){
+                break;
+            }
         }
-        if(contador = strlen(temp2)){
+        if (temp2[j] == '\0') {
             return 1;
         }
-    }return 0;
-    
-
-    
-
+    }
+    return 0;
 };
 
 
@@ -58,10 +56,21 @@ int main(){
     char string1[51], string2[51];
     puts("Escreve uma frase:");
     fgets(string1, 51, stdin);
+    for (i = 0; string1[i] != '\0'; i++) {
+        if (string1[i] == '\n') {
+            string1[i] = '\0';
+            break;
+        }
+    }
 
     puts("Escreve uma palavra para ser encontrada na frase:");
     fgets(string2, 51, stdin);
+    for (i = 0; string2[i] != '\0'; i++) {
+        if (string2[i] == '\n') {
+            string2[i] = '\0';
+            break;
+        }
+    }
 
-    int resultado =  ocorrencia(string1,string2);
-    printf("resultado: %d \n", resultado);
+    printf("resultado: %d \n", ocorrencia(string1,string2));
 }; 
