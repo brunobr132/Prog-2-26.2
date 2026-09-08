@@ -12,51 +12,68 @@
 //3. Não utilize a biblioteca <string.h> ou qualquer função pronta de busca. 
 // A função deve ser implementada manualmente, usando apenas notação de
 // ponteiros (sem colchetes [ ]).
-#include <stdio.h> 
+
+#include <stdio.h>
 #include <ctype.h>
 
-int posicao(char *substr, char *str){
-    int i,j;
-    char *temp1[101], *temp2[101];
+int posicao(char *substr, char *str) {
+    char *p, *q, *inicio;
 
-    for(i = 0; *(substr+i) != '\0'; i++ ){
-        
-        *(temp1+i) = tolower(*(substr+i));
-        printf("%d\n", *(temp1+i));
-    }; *(temp1+i) = '\0';
-    
+    if (*substr == '\0')
+        return 0;
 
-    for(i = 0; str[i] != '\0'; i++ ){
-        str[i] == tolower(str[i]);
-    }; str[i] = '\0';
+    for (p = str; *p != '\0'; p++) {
+        inicio = p;
+        q = substr;
 
-    if (str[0] = '\0'){
-        printf("ERROR: string principal invalida.");
+        while (*q != '\0' &&
+               tolower(*p) == tolower(*q)) {
+            p++;
+            q++;
+        }
+
+        if (*q == '\0')
+            return (int)(inicio - str);
+
+        p = inicio;
+    }
+
+    return -1;
+}
+
+int main(void) {
+    char str[101], substr[101];
+    char *p;
+    int resultado;
+
+    printf("Digite a string principal: ");
+    if (fgets(str, sizeof(str), stdin) == NULL)
         return 1;
-    }
 
-};
-
-int main(){
-    int i ;
-    char *substr[101], *str[101];
-    
-    puts("Escreve uma frase:");
-    fgets(str, 101, stdin);
-    for (i = 0; str+i != '\0'; i++) {
-        if (str+i == '\n') {
-            str+i == '\0';
-            break;
-        }
-    }
-    puts("Escreve uma palavra para ser encontrada na frase:");
-    fgets(*substr, 101, stdin);
-    for ( i = 0; *(substr+i) != '\0'; i++) {
-        if (*(substr+i) == '\n') {
-            *(substr+i) = '\0';
+    for (p = str; *p != '\0'; p++) {
+        if (*p == '\n') {
+            *p = '\0';
             break;
         }
     }
 
-    printf("resultado: %s, %s \n", posicao(*substr, *str));
+    printf("Digite a substring: ");
+    if (fgets(substr, sizeof(substr), stdin) == NULL)
+        return 1;
+
+    for (p = substr; *p != '\0'; p++) {
+        if (*p == '\n') {
+            *p = '\0';
+            break;
+        }
+    }
+
+    resultado = posicao(substr, str);
+
+    if (resultado == -1)
+        printf("Resultado: -1\n");
+    else
+        printf("Resultado: %d\n", resultado);
+
+    return 0;
 }
