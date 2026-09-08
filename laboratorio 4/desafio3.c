@@ -17,13 +17,13 @@
 
 int posicao(char *substr, char *str){
     int i,j;
-     char *temp1[101], *temp2[101];
+    char *temp1[101], *temp2[101];
 
     for(i = 0; *(substr+i) != '\0'; i++ ){
         
-        *(substr+i) == tolower(*(substr+i));
-        printf("%s\n", *(substr+i));
-    }; substr = '\0';
+        *(temp1+i) = tolower(*(substr+i));
+        printf("%d\n", *(temp1+i));
+    }; *(temp1+i) = '\0';
     
 
     for(i = 0; str[i] != '\0'; i++ ){
@@ -38,24 +38,25 @@ int posicao(char *substr, char *str){
 };
 
 int main(){
+    int i ;
     char *substr[101], *str[101];
     
     puts("Escreve uma frase:");
     fgets(str, 101, stdin);
-    for (int i = 0; *(str+i) != '\0'; i++) {
-        if (*(str+i) == '\n') {
-            *(str+i) = '\0';
+    for (i = 0; str+i != '\0'; i++) {
+        if (str+i == '\n') {
+            str+i == '\0';
             break;
         }
     }
     puts("Escreve uma palavra para ser encontrada na frase:");
-    fgets(substr, 101, stdin);
-    for (int i = 0; *(substr+i) != '\0'; i++) {
+    fgets(*substr, 101, stdin);
+    for ( i = 0; *(substr+i) != '\0'; i++) {
         if (*(substr+i) == '\n') {
             *(substr+i) = '\0';
             break;
         }
     }
 
-    printf("resultado: %s, %s \n", posicao(substr, str));
+    printf("resultado: %s, %s \n", posicao(*substr, *str));
 }
