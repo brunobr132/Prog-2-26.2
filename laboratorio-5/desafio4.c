@@ -26,22 +26,66 @@
 //Obs.: L/M e C/N são sempre inteiros (não há sobreposição das zonas de ataque).10
 
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(){
     int L,C,M,N;
-
-    printf("insira o Tamanho da linha e da Coluna: ");
-    scanf("%d %d\n", &L, &C);
-;
-
-    if( L < 1 || C<1){
-        printf("Linha ou Coluna invalidos, L<1 ou C<1 inseridos");
+    int **matriz;
+    
+    //sem as entradas de arquivo, descomente a linha acima para inserir os valores manualmente
+    // printf("insira o Tamanho da linha e da Coluna e as valores de M e N: \n"); 
+    if (scanf("%d %d %d %d", &L, &C, &M, &N) != 4) {
+        printf("error - entrada invalida.\n");
+        return -1;
+    }
+    
+    if( L <= 0 || C <= 0 || M <= 0 || N <= 0 || L < M || C < N){
+        printf("error - valores invalidos.\n");
         return -1;
     };
 
-    if(N<1 || M<1){
-        printf("N ou M invalidos, N<1 ou M<1 inseridos ");
-        return 1;
+    matriz = (int **)malloc(L * sizeof(int *));
+    if(!matriz){
+        printf("error - memoria insuficiente.\n");
+        return -1;
     };
-}
+
+    for (int i=0; i<L; i++){
+        
+        *(matriz + i) = (int *) malloc (C * sizeof (int));
+        if (! (*(matriz + i))){
+            printf ("Erro de alocacao de memoria\n");
+            return -1;
+        }
+    }
+    
+    for (int i=0; i<L; i++){
+        for (int j=0; j<C; j++){
+            //sem as entradas de arquivo, descomente a linha acima para inserir os valores manualmente
+            //printf("insira o valor da celula [%d][%d]: \n", i, j); 
+            if (scanf("%d", (*(matriz + i) + j)) != 1) {
+                printf("error - entrada invalida.\n");
+                return -1;
+            }
+        };
+    };
+
+    int max_soma = 0;
+    for ( int i = 0; i <= L - M; i += M) {
+        for ( int j = 0; j <= C - N; j += N) {
+            int soma = 0;
+            for ( int k = 0; k < M; k++) {
+                for ( int l = 0; l < N; l++) {
+                    soma += *(*(matriz + i + k) + j + l);
+                }
+            }
+            if (soma > max_soma) {
+                max_soma = soma;
+            }
+        }
+    }
+
+    printf("%d", max_soma);
+};
+
 
