@@ -1,0 +1,5 @@
+tico 4.40
+segundo 3.60
+teco 8.00
+tuco 10.00
+louco 6.70
