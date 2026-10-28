@@ -11,15 +11,16 @@ caracteres, e contém somente dígitos de 0 a 9
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define true 1
 #define false 0
 typedef int bool;
-typedef int TIPOCHAVE;
+typedef long long TIPOCHAVE;
 
 typedef struct
 {
     TIPOCHAVE chave;
-    
+
 } REGISTRO;
 
 typedef struct aux
@@ -63,7 +64,7 @@ void exibirPilha(PILHA *p)
     PONT end = p->topo;
     while (end != NULL)
     {
-        printf("%i ", end->reg.chave);
+        printf("%lld ", end->reg.chave);
         end = end->prox;
     }
     printf("\"\n");
@@ -73,15 +74,131 @@ bool inserirElemPilha(PILHA *p, REGISTRO reg)
 {
     PONT novo = (PONT)malloc(sizeof(ELEMENTO));
     if (novo == NULL)
-        return false; 
+        return false;
     novo->reg = reg;
     novo->prox = p->topo;
     p->topo = novo;
     return true;
 }
 
-void notacao(){
-    PILHA p;
-    inicializarPilha(&p);
-    int 
+bool excluirElemPilha(PILHA *p, REGISTRO *reg)
+{
+    if (p->topo == NULL)
+        return false;
+    *reg = p->topo->reg;
+    PONT apagar = p->topo;
+    p->topo = p->topo->prox;
+    free(apagar);
+    return true;
+}
+void reinicializarPilha(PILHA *p)
+{
+    PONT apagar;
+    PONT posicao = p->topo;
+    while (posicao != NULL)
+    {
+
+        apagar = posicao;
+        posicao = posicao->prox;
+        free(apagar);
+    }
+    p->topo = NULL;
+}
+
+int main(void)
+{
+    char expressao[34];
+    if (fgets(expressao, sizeof(expressao), stdin) == NULL)
+    {
+        fprintf(stderr, "Erro: nenhuma expressao foi informada.\n");
+        return EXIT_FAILURE;
+    }
+
+    size_t comprimento = strlen(expressao);
+    while (comprimento > 0 &&
+           (expressao[comprimento - 1] == '\n' || expressao[comprimento - 1] == '\r'))
+    {
+        expressao[--comprimento] = '\0';
+    }
+
+    if (comprimento == 0 || comprimento > 30)
+    {
+        fprintf(stderr, "Erro: a expressao deve ter entre 1 e 30 caracteres.\n");
+        return EXIT_FAILURE;
+    }
+
+    PILHA pilha;
+    inicializarPilha(&pilha);
+    const char *erro = NULL;
+
+    for (size_t i = 0; i < comprimento && erro == NULL; i++)
+    {
+        char caractere = expressao[i];
+        if (caractere >= '0' && caractere <= '9')
+        {
+            REGISTRO operando = {caractere - '0'};
+            if (!inserirElemPilha(&pilha, operando))
+                erro = "Erro: nao foi possivel alocar memoria para a pilha.";
+            continue;
+        }
+
+        if (caractere != '+' && caractere != '-' &&
+            caractere != '*' && caractere != '/')
+        {
+            erro = "Erro: a expressao contem um caractere invalido.";
+            break;
+        }
+
+        REGISTRO direita, esquerda;
+        if (!excluirElemPilha(&pilha, &direita) ||
+            !excluirElemPilha(&pilha, &esquerda))
+        {
+            erro = "Erro: faltam operandos para um operador.";
+            break;
+        }
+
+        TIPOCHAVE resultado;
+        switch (caractere)
+        {
+        case '+':
+            resultado = (long long)esquerda.chave + direita.chave;
+            break;
+        case '-':
+            resultado = (long long)esquerda.chave - direita.chave;
+            break;
+        case '*':
+            resultado = (long long)esquerda.chave * direita.chave;
+            break;
+        default:
+            if (direita.chave == 0)
+            {
+                erro = "Erro: divisao por zero.";
+                break;
+            }
+            resultado = esquerda.chave / direita.chave;
+            break;
+        }
+
+        if (erro != NULL)
+            break;
+
+        REGISTRO registroResultado = {resultado};
+        if (!inserirElemPilha(&pilha, registroResultado))
+            erro = "Erro: nao foi possivel alocar memoria para a pilha.";
+    }
+
+    if (erro == NULL && (pilha.topo == NULL || pilha.topo->prox != NULL))
+        erro = "Erro: a expressao nao forma um resultado unico.";
+
+    if (erro != NULL)
+    {
+        fprintf(stderr, "%s\n", erro);
+        reinicializarPilha(&pilha);
+        return EXIT_FAILURE;
+    }
+
+    REGISTRO resultado;
+    excluirElemPilha(&pilha, &resultado);
+    printf("%lld\n", resultado.chave);
+    return EXIT_SUCCESS;
 }
