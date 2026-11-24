@@ -1,13 +1,3 @@
-// • Escreva uma versão iterativa do algoritmo Merge Sort para rearranjar
-// um vetor v[0..n-1] em ordem crescente, com a assinatura
-// void mergesort_iterativo(int n, int v[])
-// Dica: a cada iteração, o algoritmo deve intercalar dois blocos
-// consecutivos de b elementos cada: o primeiro bloco com o segundo,o
-// terceiro com o quarto, etc. A variável b assume os valores 1, 2, 4, 8, ...
-
-// Desenvolva um programa (main) para testar a sua função. O tamanho
-// e o conteúdo do vetor de teste devem ser lidos da entrada padrão e o
-// resultado apresentado na tela.
 #include <stdio.h>
 #include <stdlib.h>
 
