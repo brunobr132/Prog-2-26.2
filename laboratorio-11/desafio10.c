@@ -1,49 +1,62 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void buscaMenorMaiorBin(int arr[], int tam, int el, int *menor, int *maior)
 {
-    int fim = tam - 1;
-    int ini = 0;
-    while (ini <= fim)
+    int inicio = 0;
+    int fim = tam;
+
+    while (inicio < fim)
     {
-        int meio = (fim + ini) / 2;
-        if (arr[meio] < el){
-            ini = meio + 1;
-            *menor = ini;
-        }
+        int meio = inicio + (fim - inicio) / 2;
+        if (*(arr + meio) < el)
+            inicio = meio + 1;
         else
-        {
-            if (arr[meio] > el){
-                fim = meio - 1;
-                *maior += 1;
-            }
-            else
-                return meio;
-        }
-    } return -1;
+            fim = meio;
+    }
+    *menor = inicio;
+
+    inicio = 0;
+    fim = tam;
+    while (inicio < fim)
+    {
+        int meio = inicio + (fim - inicio) / 2;
+        if (*(arr + meio) <= el)
+            inicio = meio + 1;
+        else
+            fim = meio;
+    }
+    *maior = tam - inicio;
 }
 
-int main(){
-    int *arr;
-    int tam, el;
-    int *menor; 
-    int *maior;
-    int n;
+int main(void)
+{
+    int tam;
+    int el;
 
-    printf("digita o tamanho do array.");
-    scanf("%d", &tam);
-    
-    printf("digita o numero que verificar a quantidade de menores que ele e maiores que ele.");
-    scanf("%d", &el);
-    
-    arr = (int*) malloc(tam*sizeof(int));
-    
-    for(int i = 0; i < arr; i++){
+    if (scanf("%d", &tam) != 1 || tam < 0)
+        return 1;
+    if (scanf("%d", &el) != 1)
+        return 1;
 
-        printf("digita os numeros do array");
-        scanf("%d", &n);
+    int *arr = malloc((size_t)tam * sizeof(*arr));
+    if (tam > 0 && arr == NULL)
+        return 1;
+
+    for (int i = 0; i < tam; i++)
+    {
+        if (scanf("%d", arr + i) != 1)
+        {
+            free(arr);
+            return 1;
+        }
     }
-    
-    buscaMenorMaiorBin(arr,tam,el,menor,maior);
 
+    int menor;
+    int maior;
+    buscaMenorMaiorBin(arr, tam, el, &menor, &maior);
+    printf("Menor: %d - Maior: %d\n", menor, maior);
+
+    free(arr);
+    return 0;
 }
